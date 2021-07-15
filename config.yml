@@ -1,0 +1,14 @@
+server:
+  type: simple
+  applicationContextPath: /
+  rootPath: /*
+  connector:
+    type: http
+    port: 3000
+database:
+  driverClass: org.postgresql.Driver
+  url: jdbc:postgresql://localhost:5432/sourav_test
+  user: sourav
+  password: password
+  maxConnectionAge: 3 hours
+  maxSize: 100
