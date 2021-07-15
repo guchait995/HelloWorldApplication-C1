@@ -11,8 +11,13 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.SessionFactoryFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import java.util.EnumSet;
 
 public class HelloWorldApplcation extends Application<HelloWorldConfiguration> {
     public static final ImmutableList<Class<?>> ENTITIES = ImmutableList.of(
@@ -50,6 +55,16 @@ public class HelloWorldApplcation extends Application<HelloWorldConfiguration> {
     @Override
     public void run(HelloWorldConfiguration configuration, Environment environment) throws Exception {
         SessionFactory sessionFactory=hibernate.getSessionFactory();
+        final FilterRegistration.Dynamic cors =
+                environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+
+        // Configure CORS parameters
+        cors.setInitParameter("allowedOrigins", "*");
+        cors.setInitParameter("allowedHeaders", "X-Requested-With,Content-Type,Accept,Origin");
+        cors.setInitParameter("allowedMethods", "OPTIONS,GET,PUT,POST,DELETE,HEAD");
+
+        // Add URL mapping
+        cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
         EmployeeRepo employeeRepo=new EmployeeRepo(sessionFactory);
 

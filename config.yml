@@ -4,7 +4,7 @@ server:
   rootPath: /*
   connector:
     type: http
-    port: 8081
+    port: 8080
 database:
   driverClass: org.postgresql.Driver
   url: jdbc:postgresql://localhost:5432/sourav_test
