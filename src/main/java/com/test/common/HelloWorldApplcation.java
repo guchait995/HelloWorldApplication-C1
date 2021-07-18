@@ -5,9 +5,6 @@ import com.test.model.SelfAssessment;
 import com.test.model.AppUser;
 import com.test.repo.UserRepo;
 import com.test.service.AdminService;
-import com.test.webResource.EmployeeWebResource;
-import com.test.model.Employee;
-import com.test.repo.EmployeeRepo;
 import com.test.webResource.UserWebResource;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
@@ -25,7 +22,6 @@ import java.util.EnumSet;
 
 public class HelloWorldApplcation extends Application<HelloWorldConfiguration> {
     public static final ImmutableList<Class<?>> ENTITIES = ImmutableList.of(
-            Employee.class,
             AppUser.class,
             SelfAssessment.class
             );
@@ -75,14 +71,12 @@ public class HelloWorldApplcation extends Application<HelloWorldConfiguration> {
 
 
         //Add Repo's
-        EmployeeRepo employeeRepo=new EmployeeRepo(sessionFactory);
         UserRepo userRepo=new UserRepo(sessionFactory);
 
 
         //service
         AdminService adminService=new AdminService(userRepo);
         //Register Resources
-        environment.jersey().register(new EmployeeWebResource(employeeRepo));
         environment.jersey().register(new UserWebResource(userRepo, adminService));
     }
 
