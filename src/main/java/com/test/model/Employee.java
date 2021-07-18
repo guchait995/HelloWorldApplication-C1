@@ -1,4 +1,4 @@
-package com.test.employee.model;
+package com.test.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.test.common.model.Entity;
@@ -12,10 +12,11 @@ import javax.persistence.Table;
 @Table(name = "employee")
 @javax.persistence.SequenceGenerator(name = "default_gen", sequenceName = "employee_id_seq", allocationSize = 1)
 public class Employee extends Entity {
-
+    @JsonProperty()
     @Column(name = "name",nullable = false)
     private String name;
 
+    @JsonProperty()
     @Column(name = "department")
     private String department;
 
@@ -25,10 +26,6 @@ public class Employee extends Entity {
     public Employee(String name, String department) {
         this.name = name;
         this.department = department;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {

@@ -1,11 +1,15 @@
 package com.test.common;
 
 import com.google.common.collect.ImmutableList;
-import com.test.employee.EmployeeWebResource;
-import com.test.employee.model.Employee;
-import com.test.employee.repo.EmployeeRepo;
+import com.test.model.SelfAssessment;
+import com.test.model.AppUser;
+import com.test.repo.UserRepo;
+import com.test.service.AdminService;
+import com.test.webResource.EmployeeWebResource;
+import com.test.model.Employee;
+import com.test.repo.EmployeeRepo;
+import com.test.webResource.UserWebResource;
 import io.dropwizard.Application;
-import io.dropwizard.Bundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.hibernate.SessionFactoryFactory;
@@ -21,7 +25,10 @@ import java.util.EnumSet;
 
 public class HelloWorldApplcation extends Application<HelloWorldConfiguration> {
     public static final ImmutableList<Class<?>> ENTITIES = ImmutableList.of(
-            Employee.class);
+            Employee.class,
+            AppUser.class,
+            SelfAssessment.class
+            );
 
     private final HibernateBundle<HelloWorldConfiguration> hibernate = new HibernateBundle<HelloWorldConfiguration>(ENTITIES,new SessionFactoryFactory()) {
         @Override
@@ -66,9 +73,17 @@ public class HelloWorldApplcation extends Application<HelloWorldConfiguration> {
         // Add URL mapping
         cors.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
-        EmployeeRepo employeeRepo=new EmployeeRepo(sessionFactory);
 
+        //Add Repo's
+        EmployeeRepo employeeRepo=new EmployeeRepo(sessionFactory);
+        UserRepo userRepo=new UserRepo(sessionFactory);
+
+
+        //service
+        AdminService adminService=new AdminService(userRepo);
+        //Register Resources
         environment.jersey().register(new EmployeeWebResource(employeeRepo));
+        environment.jersey().register(new UserWebResource(userRepo, adminService));
     }
 
 
